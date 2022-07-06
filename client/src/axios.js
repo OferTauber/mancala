@@ -1,9 +1,9 @@
 import axios from 'axios';
-// const URL =
-//   process.env.NODE_ENV === 'production'
-//     ? 'https://word-tune.herokuapp.com/server/'
-//     : 'http://127.0.0.1:5000/server/';
-const URL = 'https://word-tune.herokuapp.com/server/';
+const URL =
+  process.env.NODE_ENV === 'production'
+    ? 'https://word-tune.herokuapp.com/server/'
+    : 'http://127.0.0.1:5000/server/';
+// const URL = 'https://word-tune.herokuapp.com/server/';
 
 export const getContinent = async (continent, language) => {
   console.log('getContinent!:');
