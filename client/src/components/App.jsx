@@ -1,5 +1,7 @@
+import Socket from './socket.io/socket.io';
+
 function App() {
-  return <div>App</div>;
+  return <Socket />;
 }
 
 export default App;
