@@ -1,6 +1,10 @@
 // import React, { useState, useEffect } from 'react';
 import socketIOClient from 'socket.io-client';
-const ENDPOINT = 'https://ofer-mancala.herokuapp.com';
+
+const ENDPOINT =
+  process.env.NODE_ENV === 'production'
+    ? 'https://ofer-mancala.herokuapp.com/'
+    : 'http://127.0.0.1:5000/server/';
 
 function Socket() {
   // const [response, setResponse] = useState('');
