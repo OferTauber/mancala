@@ -4,7 +4,7 @@ const { Server } = require('socket.io');
 const path = require('path');
 
 const port = process.env.PORT || 5000;
-const index = require('./src/routes/index');
+// const index = require('./src/routes/index');
 
 const app = express();
 app.use(express.static(path.resolve(__dirname, '../client/build')));
