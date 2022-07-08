@@ -1,5 +1,24 @@
-import './pit.css';
+import { useState, useEffect } from 'react';
 
-const Pit = ({ numOfBeans }) => {
-  return <div className="pit">{numOfBeans}</div>;
+const Pit = ({ pit, onPlayersMove, pitNum }) => {
+  const [bins, setBins] = useState(pit.getBins());
+
+  useEffect(() => {
+    setBins(pit.getBins());
+  }, [pit]);
+
+  if (!pit) return;
+
+  return (
+    <div
+      className="pit"
+      onClick={() => {
+        onPlayersMove(pitNum);
+      }}
+    >
+      {bins}
+    </div>
+  );
 };
+
+export default Pit;
