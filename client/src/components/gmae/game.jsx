@@ -1,13 +1,29 @@
+import { useEffect } from 'react';
+import { useState } from 'react';
+import playersMove, { generateInitGame } from '../../utils/game_moves';
+import PitClass from '../../utils/pit_class';
+
 import './game.css';
 // import Pit from './pit/pit';
 
 const Game = (/* user */) => {
+  const [gameData, setGameData] = useState(generateInitGame());
+
+  const onPlayersMove = (pitNum) => {
+    if (gameData.userPits[pitNum].getBins() === 0) return;
+
+    const { moveResalt, moveStatus } = playersMove(gameData, pitNum);
+    setGameData(moveResalt);
+  };
+
+  if (!gameData.userPits || !gameData.userPits[0]) return;
+
   return (
     <div className="game">
-      <div className="player oponet">
+      <div className="player opponent">
         <div className="title">Omri</div>
       </div>
-      <GameBord />
+      <GameBord data={gameData} onPlayersMove={onPlayersMove} />
       <div className="player user ">
         <div className="title">You</div>
       </div>
@@ -17,59 +33,70 @@ const Game = (/* user */) => {
 
 export default Game;
 
-const GameBord = (/* Data */) => {
-  const onPlayersMove = (pitNum) => {
-    console.log(pitNum);
-  };
+const GameBord = ({ data, onPlayersMove }) => {
   const doNothing = (arg) => void arg;
 
   return (
     <div className="game-bord">
-      <Bank owner="oponet" numOfBins={3} />
+      <Bank bins={data.opponentBank} owner="opponent" />
       <div className="pist-section">
         <PitsLine
-          owner="oponet"
-          binsArr={[4, 4, 4, 4, 4, 4]}
           onPlayersMove={doNothing}
+          owner="opponent"
+          data={data.opponentPits}
         />
         <PitsLine
-          owner="user"
-          binsArr={[4, 4, 4, 4, 4, 4]}
           onPlayersMove={onPlayersMove}
+          owner="user"
+          data={data.userPits}
         />
       </div>
-      <Bank owner="user" numOfBins={3} />
+      <Bank bins={data.userBank} owner="user" />
     </div>
   );
 };
 
-const Bank = ({ owner, numOfBins }) => {
+const Bank = ({ bins, owner }) => {
   return (
     <div className={`bank-wraper ${owner}`}>
-      <div className="bank">{numOfBins}</div>
+      <div className="bank">{bins.getBins()}</div>
     </div>
   );
 };
 
-const PitsLine = ({ binsArr, owner, onPlayersMove }) => {
+const PitsLine = ({ data, owner, onPlayersMove }) => {
   const mapPits = () => {
-    return binsArr.map((pit, index) => {
-      return <Pit key={index} numOfBeans={pit} onPlayersMove={onPlayersMove} />;
+    return data.map((pit, index) => {
+      return (
+        <Pit
+          key={index}
+          pit={new PitClass(pit.getBins(), pit.getDelay())}
+          pitNum={index}
+          onPlayersMove={onPlayersMove}
+        />
+      );
     });
   };
   return <div className={`pits-line ${owner}`}>{mapPits()}</div>;
 };
 
-const Pit = ({ numOfBeans }) => {
-  return <div className="pit">{numOfBeans}</div>;
-};
+const Pit = ({ pit, onPlayersMove, pitNum }) => {
+  const [bins, setBins] = useState(pit.getBins());
 
-function PitObj(bins, owner) {
-  this.bins = bins;
-  this.owner = owner;
-  this.next = undefined;
-}
+  useEffect(() => {
+    setBins(pit.getBins());
+  }, [pit]);
 
-const generateBord = () => {
-  const userPits = [];
+  if (!pit) return;
+
+  return (
+    <div
+      className="pit"
+      onClick={() => {
+        onPlayersMove(pitNum);
+      }}
+    >
+      {bins}
+    </div>
+  );
 };

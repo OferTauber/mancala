@@ -32,7 +32,7 @@
   align-items: flex-end;
 }
 
-.bank-wraper.oponet {
+.bank-wraper.opponent {
   align-items: flex-start;
 }
 
@@ -63,9 +63,16 @@
   justify-content: space-around;
 }
 
-.pits-line.oponet {
+.pits-line.opponent {
   /* background-color: aqua; */
   flex-direction: row-reverse;
+}
+
+.pits-line.user .pit {
+  cursor: pointer;
+}
+.pits-line.user .pit:hover {
+  opacity: 0.8;
 }
 
 .pit {
