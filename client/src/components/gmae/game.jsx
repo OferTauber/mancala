@@ -1,6 +1,11 @@
 import { useEffect } from 'react';
 import { useState } from 'react';
-import playersMove, { generateInitGame } from '../../utils/game_moves';
+import {
+  playersMove,
+  generateInitGame,
+  areBeansToSteal,
+  stealBeans,
+} from '../../utils/game_moves';
 import PitClass from '../../utils/pit_class';
 
 import './game.css';
@@ -14,6 +19,10 @@ const Game = (/* user */) => {
 
     const { moveResalt, moveStatus } = playersMove(gameData, pitNum);
     setGameData(moveResalt);
+
+    if (areBeansToSteal(moveResalt, moveStatus)) {
+      setGameData(stealBeans(moveResalt, moveStatus));
+    }
   };
 
   if (!gameData.userPits || !gameData.userPits[0]) return;
