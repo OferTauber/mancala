@@ -1,12 +1,10 @@
 import Pit from '../pit/pit';
-import PitClass from '../../../utils/pit_class';
 
 export const GameBord = ({ data, onPlayersMove }) => {
   const doNothing = (arg) => void arg;
-
   return (
     <div className="game-bord">
-      <Bank bins={data.opponentBank} owner="opponent" />
+      <Bank beans={data.opponentBank} owner="opponent" />
       <div className="pist-section">
         <PitsLine
           onPlayersMove={doNothing}
@@ -19,15 +17,15 @@ export const GameBord = ({ data, onPlayersMove }) => {
           data={data.userPits}
         />
       </div>
-      <Bank bins={data.userBank} owner="user" />
+      <Bank beans={data.userBank} owner="user" />
     </div>
   );
 };
 
-export const Bank = ({ bins, owner }) => {
+export const Bank = ({ beans, owner }) => {
   return (
     <div className={`bank-wraper ${owner}`}>
-      <div className="bank">{bins.getBins()}</div>
+      <div className="bank">{beans}</div>
     </div>
   );
 };
@@ -38,12 +36,13 @@ export const PitsLine = ({ data, owner, onPlayersMove }) => {
       return (
         <Pit
           key={index}
-          pit={new PitClass(pit.getBins(), pit.getDelay())}
+          beans={pit}
           pitNum={index}
           onPlayersMove={onPlayersMove}
         />
       );
     });
   };
+
   return <div className={`pits-line ${owner}`}>{mapPits()}</div>;
 };

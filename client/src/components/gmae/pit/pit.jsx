@@ -1,14 +1,4 @@
-import { useState, useEffect } from 'react';
-
-const Pit = ({ pit, onPlayersMove, pitNum }) => {
-  const [bins, setBins] = useState(pit.getBins());
-
-  useEffect(() => {
-    setBins(pit.getBins());
-  }, [pit]);
-
-  if (!pit) return;
-
+const Pit = ({ beans, onPlayersMove, pitNum }) => {
   return (
     <div
       className="pit"
@@ -16,7 +6,7 @@ const Pit = ({ pit, onPlayersMove, pitNum }) => {
         onPlayersMove(pitNum);
       }}
     >
-      {bins}
+      {beans}
     </div>
   );
 };

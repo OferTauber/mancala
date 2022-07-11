@@ -1,114 +1,105 @@
-import PitClass from './pit_class';
+export const gameMove = async (data, setData, clickedPit, player, line) => {
+  const organizedData = organizeDataByPlayer(data, player);
+  const beansInHand = organizedData[line][clickedPit];
+  organizedData[line][clickedPit] = 0;
 
-//*  ======================= Public - exported =======================
-export const playersMove = (data, selectedPitNum) => {
-  const move = initialMove({ ...data }, selectedPitNum);
+  // if (player === 'user') {
+  //   organizedData[line][clickedPit] = 0;
+  //   setData(REorganizeDataByPlayer({ ...organizedData }, player));
+  //   return;
+  // }
+  setData(REorganizeDataByPlayer({ ...organizedData }, player));
+  const res = await gameMoveRecursive(
+    organizedData,
+    setData,
+    clickedPit + 1,
+    line,
+    beansInHand,
+    player
+  );
 
-  const toReturn = {
-    moveResalt: move.moveResalt,
-    moveStatus: undefined,
-  };
+  if (res.line === 'activBank') return 'another turn';
+  if (organizedData[res.line][res.clickedPit] !== 1) {
+    return await gameMove(
+      REorganizeDataByPlayer(organizedData, player),
+      setData,
+      res.clickedPit,
+      player,
+      res.line
+    );
+  }
+};
 
-  //* If a player's turn ends at the bank he gets another turn
-  if (move.lastPit === 'bank') {
-    toReturn.moveStatus = 'Another-turn';
+const gameMoveRecursive = async (
+  organizedData,
+  setData,
+  clickedPit,
+  line,
+  beansInHand,
+  player
+) => {
+  await sleep(300);
 
-    //* If a player's turn ends in his well - he steals the beans from the opponent's parallel well
-  } else if (move.lastPit !== 'opponent') {
-    toReturn.moveStatus = 'Beans to steal from ' + move.lastPit;
+  if (!beansInHand) {
+    setData(REorganizeDataByPlayer(organizedData, player));
+    // Recursive ends
+    if (clickedPit <= 0) {
+      line = line === 'farPits' ? 'activBank' : 'farPits';
+    }
+    return { line, clickedPit: clickedPit - 1 };
   }
 
-  return toReturn;
-};
-
-export const generateInitGame = () => {
-  const data = {
-    userPits: [4, 4, 4, 4, 4, 4],
-    userBank: new PitClass(0, 0),
-    opponentPits: [4, 4, 4, 4, 4, 4],
-    opponentBank: new PitClass(0, 0),
-  };
-
-  data.userPits = data.userPits.map((bins) => {
-    return new PitClass(bins, 0);
-  });
-  data.opponentPits = data.opponentPits.map((bins) => {
-    return new PitClass(bins, 0);
-  });
-
-  return data;
-};
-
-export const areBeansToSteal = ({ opponentPits, userPits }, moveStatus) => {
-  if (!moveStatus.startsWith('Beans to steal from')) return false; // Did the move ended in the user's side?
-
-  const userLastPit = moveStatus.slice(-1) * 1;
-  const pitToStealFrom = 5 - userLastPit;
-
-  if (1 !== userPits[userLastPit].getBins()) return false; // Did the move ended up in an empty pit? (now have 1 bean)
-
-  return 0 !== opponentPits[pitToStealFrom].getBins(); // Is ther anything to steal?!
-};
-
-export const stealBeans = (
-  { userPits, opponentPits, userBank, opponentBank },
-  moveStatus
-) => {
-  const userLastPit = moveStatus.slice(-1) * 1;
-  const pitToStealFrom = 5 - userLastPit;
-
-  const beansToSteal =
-    opponentPits[pitToStealFrom].getBins() + userPits[userLastPit].getBins();
-
-  opponentPits[pitToStealFrom].setBins(0);
-  userPits[userLastPit].setBins(0);
-  userBank.setBins(userBank.getBins() + beansToSteal);
-
-  return { userPits, opponentPits, userBank, opponentBank };
-};
-
-//* ======================= Static - Local use only =======================
-const initialMove = (
-  { userPits, opponentPits, userBank, opponentBank },
-  selectedPitNum
-) => {
-  let binsInHand = userPits[selectedPitNum].getBins();
-  userPits[selectedPitNum].setBins(0);
-  let i = selectedPitNum + 1;
-  let lastPit = i;
-  let delay = 1;
-
-  while (binsInHand) {
-    for (; i < 6 && binsInHand; i++) {
-      binsInHand--;
-      delay = updatePitAndIncDelay(userPits[i], delay);
-      lastPit = i + '';
-    }
-
-    if (binsInHand) {
-      delay = updatePitAndIncDelay(userBank, delay);
-      binsInHand--;
-      lastPit = 'bank';
-    }
-
-    for (i = 0; i < 6 && binsInHand; i++) {
-      binsInHand--;
-      delay = updatePitAndIncDelay(opponentPits[i], delay);
-      lastPit = 'opponent';
-    }
-    i = 0;
+  if (clickedPit === 6) {
+    line = line === 'closePits' ? 'activBank' : 'closePits';
+    clickedPit = 0;
   }
 
-  const toReturn = {
-    moveResalt: { userPits, opponentPits, userBank, opponentBank },
-    lastPit,
+  if (line === 'activBank') {
+    organizedData.activBank++;
+    setData(REorganizeDataByPlayer(organizedData, player));
+    return await gameMoveRecursive(
+      organizedData,
+      setData,
+      0,
+      'farPits',
+      beansInHand - 1,
+      player
+    );
+  }
+
+  organizedData[line][clickedPit]++;
+  setData(REorganizeDataByPlayer(organizedData, player));
+
+  return await gameMoveRecursive(
+    organizedData,
+    setData,
+    clickedPit + 1,
+    line,
+    beansInHand - 1,
+    player
+  );
+};
+
+const organizeDataByPlayer = (data, player) => {
+  const { userPits, opponentPits, userBank, opponentBank } = { ...data };
+  return {
+    closePits: player === 'user' ? userPits : opponentPits,
+    farPits: player !== 'user' ? userPits : opponentPits,
+    activBank: player === 'user' ? userBank : opponentBank,
+    inactivBank: player !== 'user' ? userBank : opponentBank,
   };
-
-  return toReturn;
 };
 
-const updatePitAndIncDelay = (pit, delay) => {
-  pit.incrementBins();
-  pit.setDelay(delay);
-  return delay + 1;
+const REorganizeDataByPlayer = (data, player) => {
+  const { closePits, farPits, activBank, inactivBank } = { ...data };
+  return {
+    userPits: player === 'user' ? closePits : farPits,
+    opponentPits: player !== 'user' ? closePits : farPits,
+    userBank: player === 'user' ? activBank : inactivBank,
+    opponentBank: player !== 'user' ? activBank : inactivBank,
+  };
 };
+
+function sleep(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}

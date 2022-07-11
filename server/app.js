@@ -2,6 +2,7 @@ const express = require('express');
 const http = require('http');
 const { Server } = require('socket.io');
 const path = require('path');
+// const { convertPlayerMoveToOpponent } = require('./utils/convrtr_player_moves');
 
 const port = process.env.PORT || 5000;
 // const index = require('./src/routes/index');
@@ -22,8 +23,11 @@ const io = new Server(server, {
   },
 });
 
+const userIo = io.of('/socket');
+
 io.on('connection', (socket) => {
   console.log('New client connected');
+  socket.emit('massage', 'Welcome');
 
   socket.on('ping', (ping) => {
     io.emit('massage', ping);
@@ -31,6 +35,29 @@ io.on('connection', (socket) => {
 
   socket.on('disconnect', () => {
     console.log('Client disconnected');
+  });
+
+  socket.on('move', (pitNum) => {
+    // convertPlayerMoveToOpponent(moveResalt);
+    socket.broadcast.emit('opponent-move', pitNum);
+  });
+});
+
+userIo.on('connection', (socket) => {
+  console.log('New client connected');
+  socket.emit('massage', 'Welcome');
+
+  socket.on('ping', (ping) => {
+    io.emit('massage', ping);
+  });
+
+  socket.on('disconnect', () => {
+    console.log('Client disconnected');
+  });
+
+  socket.on('move', (pitNum) => {
+    // convertPlayerMoveToOpponent(moveResalt);
+    socket.broadcast.emit('opponent-move', pitNum);
   });
 });
 

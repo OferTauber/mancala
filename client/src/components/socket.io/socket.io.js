@@ -6,7 +6,7 @@ const ENDPOINT =
     ? 'https://ofer-mancala.herokuapp.com/'
     : 'http://127.0.0.1:5000/server/';
 
-function Socket() {
+function Socket2() {
   // const [response, setResponse] = useState('');
   const pings = ['Ping!', 'Pssss', 'Pong', 'Hi!!', 'Oi!'];
 
@@ -28,4 +28,4 @@ function Socket() {
   );
 }
 
-export default Socket;
+export default Socket2;

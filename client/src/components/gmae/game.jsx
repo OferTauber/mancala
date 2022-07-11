@@ -1,35 +1,54 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import './game.css';
+
 import { GameBord } from './game_bord/game_bord';
-import {
-  playersMove,
-  generateInitGame,
-  areBeansToSteal,
-  stealBeans,
-} from '../../utils/game_moves';
+import { gameMove } from '../../utils/game_moves';
+import { useSocket } from '../../contecst/socket_provider';
 
 const Game = (/* user */) => {
-  const [gameData, setGameData] = useState(generateInitGame());
+  const [gameData, setGameData] = useState({
+    userPits: [4, 4, 4, 4, 4, 4],
+    userBank: 0,
+    opponentPits: [4, 4, 4, 4, 4, 4],
+    opponentBank: 0,
+  });
 
-  const onPlayersMove = (pitNum) => {
-    if (gameData.userPits[pitNum].getBins() === 0) return;
+  //TODO const [userTurn, setUserTurn] = useState(true);
+  const socket = useSocket();
 
-    const { moveResalt, moveStatus } = playersMove(gameData, pitNum);
-    setGameData(moveResalt);
+  useEffect(() => {
+    if (!socket) return;
+    socket.on('massage', printMassage);
+    return () => socket.off('massage');
+  }, [socket]);
 
-    if (areBeansToSteal(moveResalt, moveStatus)) {
-      setGameData(stealBeans(moveResalt, moveStatus));
-    }
+  const printMassage = (text) => {
+    console.log(text);
   };
 
-  if (!gameData.userPits || !gameData.userPits[0]) return;
+  useEffect(() => {
+    if (!socket) return;
+    socket.on('opponent-move', onOpponentMove);
+    return () => socket.off('opponent-move');
+  });
+
+  const onOpponentMove = (pitNum) => {
+    gameMove(gameData, setGameData, pitNum, 'opponent', 'closePits');
+  };
+
+  const onUserMove = (pitNum) => {
+    socket.emit('move', pitNum);
+    gameMove(gameData, setGameData, pitNum, 'user', 'closePits');
+  };
+
+  if (!gameData || !gameData.userPits) return;
 
   return (
     <div className="game">
       <div className="player opponent">
         <div className="title">Omri</div>
       </div>
-      <GameBord data={gameData} onPlayersMove={onPlayersMove} />
+      <GameBord data={gameData} onPlayersMove={onUserMove} />
       <div className="player user ">
         <div className="title">You</div>
       </div>
