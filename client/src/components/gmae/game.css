@@ -68,10 +68,10 @@
   flex-direction: row-reverse;
 }
 
-.pits-line.user .pit {
+.pist-section.active .pits-line.user .pit {
   cursor: pointer;
 }
-.pits-line.user .pit:hover {
+.pist-section.active .pits-line.user .pit:hover {
   opacity: 0.8;
 }
 
@@ -81,4 +81,9 @@
   background-color: rgba(0, 0, 0, 0.4);
   border-radius: 100rem;
   line-height: 8rem; /*! same as height */
+}
+
+.player.active {
+  color: red;
+  font-weight: 700;
 }

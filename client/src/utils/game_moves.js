@@ -27,6 +27,8 @@ export const gameMove = async (data, setData, clickedPit, player, line) => {
       player,
       res.line
     );
+  } else {
+    return 'switch turns';
   }
 };
 

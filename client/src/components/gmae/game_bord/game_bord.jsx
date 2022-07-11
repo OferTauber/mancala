@@ -1,11 +1,11 @@
 import Pit from '../pit/pit';
 
-export const GameBord = ({ data, onPlayersMove }) => {
+export const GameBord = ({ data, onPlayersMove, userTurn }) => {
   const doNothing = (arg) => void arg;
   return (
     <div className="game-bord">
       <Bank beans={data.opponentBank} owner="opponent" />
-      <div className="pist-section">
+      <div className={`pist-section ${userTurn && 'active'}`}>
         <PitsLine
           onPlayersMove={doNothing}
           owner="opponent"

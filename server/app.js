@@ -23,8 +23,6 @@ const io = new Server(server, {
   },
 });
 
-const userIo = io.of('/socket');
-
 io.on('connection', (socket) => {
   console.log('New client connected');
   socket.emit('massage', 'Welcome');
@@ -41,23 +39,9 @@ io.on('connection', (socket) => {
     // convertPlayerMoveToOpponent(moveResalt);
     socket.broadcast.emit('opponent-move', pitNum);
   });
-});
 
-userIo.on('connection', (socket) => {
-  console.log('New client connected');
-  socket.emit('massage', 'Welcome');
-
-  socket.on('ping', (ping) => {
-    io.emit('massage', ping);
-  });
-
-  socket.on('disconnect', () => {
-    console.log('Client disconnected');
-  });
-
-  socket.on('move', (pitNum) => {
-    // convertPlayerMoveToOpponent(moveResalt);
-    socket.broadcast.emit('opponent-move', pitNum);
+  socket.on('switch', () => {
+    socket.broadcast.emit('opponent-turn-end');
   });
 });
 

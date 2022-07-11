@@ -12,8 +12,9 @@ const Game = (/* user */) => {
     opponentPits: [4, 4, 4, 4, 4, 4],
     opponentBank: 0,
   });
+  const [freezeGame, setFreezeGame] = useState(false);
+  const [userTurn, setUserTurn] = useState(true);
 
-  //TODO const [userTurn, setUserTurn] = useState(true);
   const socket = useSocket();
 
   useEffect(() => {
@@ -32,24 +33,72 @@ const Game = (/* user */) => {
     return () => socket.off('opponent-move');
   });
 
+  useEffect(() => {
+    if (!socket) return;
+    socket.on('opponent-turn-end', () => {
+      setUserTurn(true);
+    });
+    return () => socket.off('opponent-turn-end');
+  });
+
   const onOpponentMove = (pitNum) => {
     gameMove(gameData, setGameData, pitNum, 'opponent', 'closePits');
   };
 
-  const onUserMove = (pitNum) => {
-    socket.emit('move', pitNum);
-    gameMove(gameData, setGameData, pitNum, 'user', 'closePits');
+  const onUserMove = async (pitNum) => {
+    if (freezeGame || !userTurn) return;
+    try {
+      setFreezeGame(true);
+      socket.emit('move', pitNum);
+      const turnStatus = await gameMove(
+        gameData,
+        setGameData,
+        pitNum,
+        'user',
+        'closePits'
+      );
+      handelTurnStatus(turnStatus);
+    } catch (e) {
+      console.error(e);
+    }
+    setFreezeGame(false);
+  };
+
+  const handelTurnStatus = (turnStatus) => {
+    if (turnStatus === 'another turn') {
+      displatAnotherTurnMassage();
+    }
+    if (turnStatus === 'switch turns') {
+      setUserTurn(false);
+      socket.emit('switch');
+    }
+  };
+
+  const displatAnotherTurnMassage = () => {
+    // TODO
+    console.log('t!');
+  };
+
+  const notMyTurn = () => {
+    setUserTurn(false);
   };
 
   if (!gameData || !gameData.userPits) return;
 
   return (
     <div className="game">
-      <div className="player opponent">
+      <div className="temp">
+        <button onClick={notMyTurn}>notMyTurn</button>
+      </div>
+      <div className={`player opponent ${!userTurn && 'active'}`}>
         <div className="title">Omri</div>
       </div>
-      <GameBord data={gameData} onPlayersMove={onUserMove} />
-      <div className="player user ">
+      <GameBord
+        data={gameData}
+        onPlayersMove={onUserMove}
+        userTurn={userTurn}
+      />
+      <div className={`player user ${userTurn && 'active'}`}>
         <div className="title">You</div>
       </div>
     </div>
