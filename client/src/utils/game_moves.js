@@ -1,15 +1,17 @@
-export const gameMove = async (data, setData, clickedPit, player, line) => {
+export const gameMoveRecursive = async (
+  data,
+  setData,
+  clickedPit,
+  player,
+  line,
+  setWinner
+) => {
   const organizedData = organizeDataByPlayer(data, player);
   const beansInHand = organizedData[line][clickedPit];
   organizedData[line][clickedPit] = 0;
 
-  // if (player === 'user') {
-  //   organizedData[line][clickedPit] = 0;
-  //   setData(REorganizeDataByPlayer({ ...organizedData }, player));
-  //   return;
-  // }
   setData(REorganizeDataByPlayer({ ...organizedData }, player));
-  const res = await gameMoveRecursive(
+  const res = await gameLoopRecursive(
     organizedData,
     setData,
     clickedPit + 1,
@@ -18,9 +20,22 @@ export const gameMove = async (data, setData, clickedPit, player, line) => {
     player
   );
 
-  if (res.line === 'activBank') return 'another turn';
+  if (isGameOver(organizedData)) {
+    setTimeout(() => {
+      gameOver(
+        REorganizeDataByPlayer(organizedData, player),
+        setData,
+        5,
+        setWinner
+      );
+    }, 500);
+    return 'game over';
+  }
+  if (res.line === 'activBank') {
+    return 'another turn';
+  }
   if (organizedData[res.line][res.clickedPit] !== 1) {
-    return await gameMove(
+    return await gameMoveRecursive(
       REorganizeDataByPlayer(organizedData, player),
       setData,
       res.clickedPit,
@@ -32,7 +47,31 @@ export const gameMove = async (data, setData, clickedPit, player, line) => {
   }
 };
 
-const gameMoveRecursive = async (
+const isGameOver = (organizedData) => {
+  console.log(organizedData);
+  return organizedData.closePits.every((pit) => pit === 0);
+};
+
+const gameOver = async (data, setData, i, setWinner) => {
+  if (i < 0) {
+    let winner = 'user';
+    if (data.userBank === data.opponentBank) winner = 'tie';
+    if (data.userBank < data.opponentBank) winner = 'opponent';
+    setWinner(winner);
+    return;
+  }
+
+  await sleep(250);
+  data.userBank += data.userPits[i];
+  data.userPits[i] = 0;
+
+  data.opponentBank += data.opponentPits[i];
+  data.opponentPits[i] = 0;
+  setData(data);
+  gameOver({ ...data }, setData, i - 1, setWinner);
+};
+
+const gameLoopRecursive = async (
   organizedData,
   setData,
   clickedPit,
@@ -40,7 +79,7 @@ const gameMoveRecursive = async (
   beansInHand,
   player
 ) => {
-  await sleep(300);
+  await sleep(200);
 
   if (!beansInHand) {
     setData(REorganizeDataByPlayer(organizedData, player));
@@ -59,7 +98,7 @@ const gameMoveRecursive = async (
   if (line === 'activBank') {
     organizedData.activBank++;
     setData(REorganizeDataByPlayer(organizedData, player));
-    return await gameMoveRecursive(
+    return await gameLoopRecursive(
       organizedData,
       setData,
       0,
@@ -72,7 +111,7 @@ const gameMoveRecursive = async (
   organizedData[line][clickedPit]++;
   setData(REorganizeDataByPlayer(organizedData, player));
 
-  return await gameMoveRecursive(
+  return await gameLoopRecursive(
     organizedData,
     setData,
     clickedPit + 1,
