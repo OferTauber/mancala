@@ -2,15 +2,17 @@ import { useState, useEffect } from 'react';
 import './game.css';
 
 import { GameBord } from './game_bord/game_bord';
-import { gameMoveRecursive } from '../../utils/game_moves';
+import { gameMove, gameOver } from '../../utils/game_moves';
 import { useSocket } from '../../contecst/socket_provider';
+const tempArr = [0, 0, 0, 0, 2, 1];
 
 const Game = (/* user */) => {
   const [gameData, setGameData] = useState({
     // userPits: [4, 4, 4, 4, 4, 4],
-    userPits: [0, 0, 0, 0, 0, 1],
+    userPits: [...tempArr],
     userBank: 0,
     opponentPits: [4, 4, 4, 4, 4, 4],
+    // opponentPits: [...tempArr],
     opponentBank: 0,
   });
   const [freezeGame, setFreezeGame] = useState(false);
@@ -20,21 +22,20 @@ const Game = (/* user */) => {
 
   const socket = useSocket();
 
-  //! Temp!
+  // Temp! //* socket.on massage
   useEffect(() => {
+    const printMassage = (text) => {
+      console.log(text);
+    };
     if (!socket) return;
     socket.on('massage', printMassage);
     return () => socket.off('massage');
   }, [socket]);
 
-  //! Temp!
+  // Temp! //*setOpponentName('Omri');
   useEffect(() => {
     setOpponentName('Omri');
   }, []);
-
-  const printMassage = (text) => {
-    console.log(text);
-  };
 
   //* Opponent move
   useEffect(() => {
@@ -43,24 +44,8 @@ const Game = (/* user */) => {
     return () => socket.off('opponent-move');
   });
   const onOpponentMove = (pitNum) => {
-    gameMoveRecursive(
-      gameData,
-      setGameData,
-      pitNum,
-      'opponent',
-      'closePits',
-      setWinner
-    );
+    playerMove(pitNum, 'opponent');
   };
-
-  //* Opponent turn end
-  useEffect(() => {
-    if (!socket) return;
-    socket.on('opponent-turn-end', () => {
-      setUserTurn(true);
-    });
-    return () => socket.off('opponent-turn-end');
-  });
 
   //* User move
   const onUserMove = async (pitNum) => {
@@ -68,36 +53,47 @@ const Game = (/* user */) => {
     try {
       setFreezeGame(true);
       socket.emit('move', pitNum);
-      const turnStatus = await gameMoveRecursive(
-        gameData,
-        setGameData,
-        pitNum,
-        'user',
-        'closePits',
-        setWinner
-      );
-      handelTurnStatus(turnStatus);
+      playerMove(pitNum, 'user');
     } catch (e) {
       console.error(e);
     }
     setFreezeGame(false);
   };
 
-  const handelTurnStatus = (turnStatus) => {
+  const playerMove = async (pitNum, player) => {
+    const moveStatus = await gameMove(gameData, setGameData, pitNum, player);
+    handelTurnStatus(moveStatus);
+  };
+
+  const handelTurnStatus = async (turnStatus) => {
     switch (turnStatus) {
       case 'switch turns':
-        setUserTurn(false);
-        socket.emit('switch');
+        togglTurn();
         break;
       case 'game over':
-        console.log('gameOver');
-        //todo
+        onGameOver();
         break;
       case 'another turn':
       default:
+        //TODO
         displatAnotherTurnMassage();
         break;
     }
+  };
+
+  const togglTurn = () => {
+    setUserTurn(!userTurn);
+  };
+
+  const onGameOver = async () => {
+    setFreezeGame(true);
+    console.log(gameData);
+    const res = await gameOver(
+      { ...gameData },
+      setGameData,
+      userTurn ? 'user' : 'opponent'
+    );
+    setWinner(res);
   };
 
   const displatAnotherTurnMassage = () => {
