@@ -4,33 +4,21 @@ import './game.css';
 import { GameBord } from './game_bord/game_bord';
 import { gameMove, gameOver } from '../../utils/game_moves';
 import { useSocket } from '../../contecst/socket_provider';
-const tempArr = [0, 0, 0, 0, 2, 1];
 
-const Game = (/* user */) => {
+const Game = ({ userName }) => {
   const [gameData, setGameData] = useState({
-    // userPits: [4, 4, 4, 4, 4, 4],
-    userPits: [...tempArr],
+    userPits: [4, 4, 4, 4, 4, 4],
     userBank: 0,
     opponentPits: [4, 4, 4, 4, 4, 4],
-    // opponentPits: [...tempArr],
     opponentBank: 0,
   });
   const [freezeGame, setFreezeGame] = useState(false);
   const [userTurn, setUserTurn] = useState(true);
   const [winner, setWinner] = useState('');
   const [opponentName, setOpponentName] = useState('');
+  // const [userId, setUserId] = useState('');
 
   const socket = useSocket();
-
-  // Temp! //* socket.on massage
-  useEffect(() => {
-    const printMassage = (text) => {
-      console.log(text);
-    };
-    if (!socket) return;
-    socket.on('massage', printMassage);
-    return () => socket.off('massage');
-  }, [socket]);
 
   // Temp! //*setOpponentName('Omri');
   useEffect(() => {
@@ -52,7 +40,7 @@ const Game = (/* user */) => {
     if (freezeGame || !userTurn) return;
     try {
       setFreezeGame(true);
-      socket.emit('move', pitNum);
+      socket.emit('move', pitNum); // TODO room
       playerMove(pitNum, 'user');
     } catch (e) {
       console.error(e);
@@ -87,7 +75,6 @@ const Game = (/* user */) => {
 
   const onGameOver = async () => {
     setFreezeGame(true);
-    console.log(gameData);
     const res = await gameOver(
       { ...gameData },
       setGameData,
@@ -110,9 +97,11 @@ const Game = (/* user */) => {
 
   return (
     <div className="game">
+      {/*//! Temp! vvv */}
       <div className="temp">
         <button onClick={notMyTurn}>notMyTurn</button>
       </div>
+      {/*//! Temp! ^^^^ */}
       {winner && <Winner winner={winner} />}
       <div className={`player opponent ${!userTurn && 'active'}`}>
         <div className="title">{opponentName}</div>
@@ -123,7 +112,7 @@ const Game = (/* user */) => {
         userTurn={userTurn}
       />
       <div className={`player user ${userTurn && 'active'}`}>
-        <div className="title">You</div>
+        <div className="title">{userName}</div>
       </div>
     </div>
   );

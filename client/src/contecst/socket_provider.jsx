@@ -12,17 +12,17 @@ export function useSocket() {
   return useContext(SocketContecst);
 }
 
-export function SocketProvider({ id, children }) {
+export function SocketProvider({ name, children }) {
   const [socket, setSocket] = useState();
 
   useEffect(() => {
-    const newSocket = io(ENDPOINT, { query: { id } });
+    const newSocket = io(ENDPOINT, { query: { name } });
     setSocket(newSocket);
 
     return () => {
       newSocket.close();
     };
-  }, [id]);
+  }, [name]);
 
   return (
     <SocketContecst.Provider value={socket}>{children}</SocketContecst.Provider>

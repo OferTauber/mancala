@@ -17,7 +17,7 @@ const Login = ({ setName }) => {
     <div className="login">
       <form>
         <div>
-          <label for="name">Nickname</label>
+          <label htmlFor="name">Nickname</label>
           <input
             name="name"
             type="text"
