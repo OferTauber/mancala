@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import './game.css';
-
 import { GameBord } from './game_bord/game_bord';
 import { gameMove, gameOver } from '../../utils/game_moves';
 import { useSocket } from '../../contecst/socket_provider';
@@ -81,20 +80,10 @@ const Game = ({ userName, userId, gameRoom }) => {
     console.log('t!');
   };
 
-  //! Temp!
-  const notMyTurn = () => {
-    setUserTurn(false);
-  };
-
   if (!gameData || !gameData.userPits) return;
 
   return (
     <div className="game">
-      {/*//! Temp! vvv */}
-      <div className="temp">
-        <button onClick={notMyTurn}>notMyTurn</button>
-      </div>
-      {/*//! Temp! ^^^^ */}
       {winner && <Winner winner={winner} />}
       <div className={`player opponent ${!userTurn && 'active'}`}>
         <div className="title">{gameRoom.opponent.name}</div>
