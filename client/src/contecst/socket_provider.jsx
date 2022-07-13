@@ -1,11 +1,11 @@
 import React, { useState, useEffect, useContext } from 'react';
 import io from 'socket.io-client';
 
-// const ENDPOINT = 'https://ofer-mancala.herokuapp.com/';
+const ENDPOINT = 'https://ofer-mancala.herokuapp.com/';
 // const ENDPOINT = 'http://127.0.0.1:5000/';
-const ENDPOINT = process.env.PORT
-  ? 'https://ofer-mancala.herokuapp.com/'
-  : 'http://127.0.0.1:5000/';
+// const ENDPOINT = process.env.PORT
+//   ? 'https://ofer-mancala.herokuapp.com/'
+//   : 'http://127.0.0.1:5000/';
 
 const SocketContecst = React.createContext();
 
