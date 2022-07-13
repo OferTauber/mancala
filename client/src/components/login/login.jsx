@@ -14,10 +14,15 @@ const Login = ({ setName }) => {
   };
 
   return (
-    <div className="login">
-      <form>
-        <div>
-          <label htmlFor="name">Nickname</label>
+    <div className="login full-screen centerd-column white">
+      <div className="blue box centerd-column white-font">
+        <div className="logo"></div>
+        <form className="login-form centerd-column">
+          <h1>Welcome!</h1>
+
+          <label htmlFor="name" className="m-font">
+            Please enter your nickname
+          </label>
           <input
             name="name"
             type="text"
@@ -25,17 +30,17 @@ const Login = ({ setName }) => {
             onChange={(e) => onInputChance(e)}
             required
           />
-        </div>
-        <div>
+
           <button
+            className="btn"
             onClick={(e) => {
               onSubmit(e);
             }}
           >
-            Login
+            Let's play Mancala!
           </button>
-        </div>
-      </form>
+        </form>
+      </div>
     </div>
   );
 };

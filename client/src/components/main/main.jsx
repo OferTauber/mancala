@@ -3,9 +3,11 @@ import Login from '../login/login';
 import WaitForOpponent from '../look_for_opponent/wait_for_opponent';
 import { SocketProvider } from '../../contecst/socket_provider';
 import { useState } from 'react';
+import './main.css';
 
 const Main = () => {
-  const [userName, setUserName] = useState('');
+  // const [userName, setUserName] = useState('');
+  const [userName, setUserName] = useState(Math.floor(Math.random() * 100));
   const [userId, setUserId] = useState('');
   const [gameRoom, setGameRoom] = useState({});
 
