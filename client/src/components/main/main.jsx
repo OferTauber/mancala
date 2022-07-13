@@ -17,7 +17,11 @@ const Main = () => {
     <SocketProvider name={userName}>
       {/* <Navbar /> */}
       {!gameRoom.room && (
-        <WaitForOpponent setUserId={setUserId} setGameRoom={setGameRoom} />
+        <WaitForOpponent
+          setUserId={setUserId}
+          setGameRoom={setGameRoom}
+          userId={userId}
+        />
       )}
       {gameRoom.room && (
         <Game userName={userName} userId={userId} gameRoom={gameRoom} />

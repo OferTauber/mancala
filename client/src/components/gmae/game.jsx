@@ -5,7 +5,7 @@ import { GameBord } from './game_bord/game_bord';
 import { gameMove, gameOver } from '../../utils/game_moves';
 import { useSocket } from '../../contecst/socket_provider';
 
-const Game = ({ userName }) => {
+const Game = ({ userName, userId, gameRoom }) => {
   const [gameData, setGameData] = useState({
     userPits: [4, 4, 4, 4, 4, 4],
     userBank: 0,
@@ -13,17 +13,10 @@ const Game = ({ userName }) => {
     opponentBank: 0,
   });
   const [freezeGame, setFreezeGame] = useState(false);
-  const [userTurn, setUserTurn] = useState(true);
+  const [userTurn, setUserTurn] = useState(userId !== gameRoom.firstPlayerId);
   const [winner, setWinner] = useState('');
-  const [opponentName, setOpponentName] = useState('');
-  // const [userId, setUserId] = useState('');
 
   const socket = useSocket();
-
-  // Temp! //*setOpponentName('Omri');
-  useEffect(() => {
-    setOpponentName('Omri');
-  }, []);
 
   //* Opponent move
   useEffect(() => {
@@ -40,7 +33,7 @@ const Game = ({ userName }) => {
     if (freezeGame || !userTurn) return;
     try {
       setFreezeGame(true);
-      socket.emit('move', pitNum); // TODO room
+      socket.emit('move', { pitNum, room: gameRoom.room }); // TODO room
       playerMove(pitNum, 'user');
     } catch (e) {
       console.error(e);
@@ -104,7 +97,7 @@ const Game = ({ userName }) => {
       {/*//! Temp! ^^^^ */}
       {winner && <Winner winner={winner} />}
       <div className={`player opponent ${!userTurn && 'active'}`}>
-        <div className="title">{opponentName}</div>
+        <div className="title">{gameRoom.opponent.name}</div>
       </div>
       <GameBord
         data={gameData}
