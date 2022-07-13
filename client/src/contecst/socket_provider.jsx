@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useContext } from 'react';
 import io from 'socket.io-client';
 
-const ENDPOINT =
-  process.env.NODE_ENV === 'production'
-    ? 'https://ofer-mancala.herokuapp.com/'
-    : 'http://127.0.0.1:5000/';
+// const ENDPOINT = 'http://127.0.0.1:5000/';
+const ENDPOINT = process.env.PORT
+  ? 'https://ofer-mancala.herokuapp.com/'
+  : 'http://127.0.0.1:5000/';
 
 const SocketContecst = React.createContext();
 
@@ -16,12 +16,16 @@ export function SocketProvider({ name, children }) {
   const [socket, setSocket] = useState();
 
   useEffect(() => {
-    const newSocket = io(ENDPOINT, { query: { name } });
-    setSocket(newSocket);
+    try {
+      const newSocket = io(ENDPOINT, { query: { name } });
+      setSocket(newSocket);
 
-    return () => {
-      newSocket.close();
-    };
+      return () => {
+        newSocket.close();
+      };
+    } catch (e) {
+      console.warn(e);
+    }
   }, [name]);
 
   return (
