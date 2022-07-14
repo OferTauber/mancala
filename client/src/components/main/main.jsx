@@ -6,8 +6,7 @@ import { useState } from 'react';
 import './main.css';
 
 const Main = () => {
-  // const [userName, setUserName] = useState('');
-  const [userName, setUserName] = useState(Math.floor(Math.random() * 100));
+  const [userName, setUserName] = useState('');
   const [userId, setUserId] = useState('');
   const [gameRoom, setGameRoom] = useState({});
 
@@ -17,6 +16,7 @@ const Main = () => {
     <SocketProvider name={userName}>
       {!gameRoom.room && (
         <WaitForOpponent
+          userName={userName}
           setUserId={setUserId}
           setGameRoom={setGameRoom}
           userId={userId}

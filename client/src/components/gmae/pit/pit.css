@@ -1,0 +1,59 @@
+.pit {
+  width: 9vw;
+  height: 9vw;
+}
+
+.pist-section.active .pits-line.user .pit {
+  cursor: pointer;
+}
+.pist-section.active .pits-line.user .pit:hover {
+  box-shadow: 0 0 0.5rem var(--color-white);
+}
+
+.counter {
+  font-size: 1.5rem;
+  position: absolute;
+  top: -1.7rem;
+  left: 0.61rem;
+  color: var(--color-wood);
+  font-weight: 200;
+}
+
+.bean {
+  width: 3rem;
+  height: 3rem;
+  position: absolute;
+  animation: fade-in 0.2s linear both;
+}
+
+@keyframes fade-in {
+  0% {
+    opacity: 0;
+    transform: translateY(-1rem);
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+.bean1 {
+  background: url('../../../../assets/img/marble1.png') center center / cover;
+}
+.bean2 {
+  background: url('../../../../assets/img/marble2.png') center center / cover;
+}
+.bean3 {
+  background: url('../../../../assets/img/marble3.png') center center / cover;
+}
+.bean4 {
+  background: url('../../../../assets/img/marble4.png') center center / cover;
+}
+.bean5 {
+  background: url('../../../../assets/img/marble5.png') center center / cover;
+}
+.bean6 {
+  background: url('../../../../assets/img/marble6.png') center center / cover;
+}
+.bean7 {
+  background: url('../../../../assets/img/marble7.png') center center / cover;
+}

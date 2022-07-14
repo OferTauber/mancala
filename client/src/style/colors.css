@@ -1,8 +1,14 @@
 :root {
   --color-blue: #033e8c;
+  --color-lightblue: #1655a8;
   --color-white: #f5f5f5;
   --color-gray: #d5d5d5;
-  --color-black: #333;
+  --color-black: #222;
+  --color-yellow: #bfa004;
+  --color-wood: #d9ab73;
+  --color-brune: #a64f03;
+  --color-red: #a60808;
+  --pit-fill: rgba(200, 200, 200, 0.18);
 }
 
 .white {
@@ -16,6 +22,30 @@
 }
 .blue-font {
   color: var(--color-blue);
+}
+.yellow {
+  background-color: var(--color-yellow);
+}
+.yellow-font {
+  color: var(--color-yellow);
+}
+.wood {
+  background-color: var(--color-wood);
+}
+.wood-font {
+  color: var(--color-wood);
+}
+.brune {
+  background-color: var(--color-brune);
+}
+.brune-font {
+  color: var(--color-brune);
+}
+.red {
+  background-color: var(--color-red);
+}
+.red-font {
+  color: var(--color-red);
 }
 
 html {

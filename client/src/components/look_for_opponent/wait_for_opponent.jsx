@@ -1,9 +1,10 @@
 import { useSocket } from '../../contecst/socket_provider';
 import { useState, useEffect } from 'react';
 import Spinner from '../spinner/spinner';
+import './wait_for_opponent.css';
 
-const WaitForOpponent = ({ setUserId, setGameRoom, userId }) => {
-  const [spinner, setSpinner] = useState(true);
+const WaitForOpponent = ({ setUserId, setGameRoom, userId, userName }) => {
+  const [spinner, setSpinner] = useState(false); //! style
   const socket = useSocket();
 
   useEffect(() => {
@@ -35,7 +36,17 @@ const WaitForOpponent = ({ setUserId, setGameRoom, userId }) => {
 
   if (spinner) return <Spinner />;
 
-  return <h1>Wait For Game To Start</h1>;
+  return (
+    <div className="full-screen wait-for-opponent">
+      <h2 className="blue-font">Welcome {userName}</h2>;
+      <h3>We are wating for an opponent to start the game</h3>
+      <img
+        className="search"
+        src="https://cdn.dribbble.com/users/1015322/screenshots/6521465/buscando_v01.gif"
+        alt="search"
+      />
+    </div>
+  );
 };
 
 export default WaitForOpponent;
