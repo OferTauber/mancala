@@ -3,7 +3,6 @@ import './game.css';
 import { GameBord } from './game_bord/game_bord';
 import { gameMove, gameOver } from '../../utils/game_moves';
 import { useSocket } from '../../contecst/socket_provider';
-// import DeviceOrientation, { Orientation } from 'react-screen-orientation';
 
 const Game = ({ userName, userId, gameRoom }) => {
   const [gameData, setGameData] = useState({
@@ -95,8 +94,6 @@ const Game = ({ userName, userId, gameRoom }) => {
   if (!gameData || !gameData.userPits) return;
 
   return (
-    // <DeviceOrientation lockOrientation={'landscape'}>
-    //   <Orientation orientation="landscape" alwaysRender={true}>
     <div className="game full-screen centerd-column">
       <MassageBox massage={massage} />
       {/* {winner && <Winner winner={winner} />} */}
@@ -123,8 +120,6 @@ const Game = ({ userName, userId, gameRoom }) => {
         </div>
       </div>
     </div>
-    // </Orientation>
-    // </DeviceOrientation>
   );
 };
 
