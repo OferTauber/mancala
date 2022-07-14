@@ -19,10 +19,13 @@ export function useSocket() {
 
 export function SocketProvider({ name, children }) {
   const [socket, setSocket] = useState();
+  const [isSocketConected, setIsSocketConected] = useState(false);
 
   useEffect(() => {
     try {
-      const newSocket = io(ENDPOINT, { query: { name } });
+      const newSocket = io(ENDPOINT, {
+        query: { name },
+      });
       setSocket(newSocket);
 
       return () => {
@@ -33,7 +36,17 @@ export function SocketProvider({ name, children }) {
     }
   }, [name]);
 
+  useEffect(() => {
+    if (!socket) return;
+    socket.on('confirm connection', () => {
+      setIsSocketConected(true);
+    });
+    return () => socket.off('confirm connection');
+  }, [socket]);
+
   return (
-    <SocketContecst.Provider value={socket}>{children}</SocketContecst.Provider>
+    <SocketContecst.Provider value={{ socket, isSocketConected }}>
+      {children}{' '}
+    </SocketContecst.Provider>
   );
 }

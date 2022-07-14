@@ -12,6 +12,7 @@ const gameMoveRecursive = async (data, setData, clickedPit, player, line) => {
   const organizedData = organizeDataByPlayer(data, player);
   const beansInHand = organizedData[line][clickedPit];
   organizedData[line][clickedPit] = 0;
+  await sleep(100);
 
   setData(REorganizeDataByPlayer({ ...organizedData }, player));
 

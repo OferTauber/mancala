@@ -4,20 +4,28 @@ import { GameBord } from './game_bord/game_bord';
 import { gameMove, gameOver } from '../../utils/game_moves';
 import { useSocket } from '../../contecst/socket_provider';
 
-const Game = ({ userName, userId, gameRoom }) => {
+const Game = ({ userName, userId, gameRoom, restartGame }) => {
   const [gameData, setGameData] = useState({
     userPits: [4, 4, 4, 4, 4, 4],
-    // userPits: [0, 0, 0, 0, 2, 1],
     userBank: 0,
     opponentPits: [4, 4, 4, 4, 4, 4],
-    // opponentPits: [0, 0, 0, 0, 2, 1],
     opponentBank: 0,
   });
   const [freezeGame, setFreezeGame] = useState(false);
   const [userTurn, setUserTurn] = useState(userId !== gameRoom.firstPlayerId);
   const [massage, setMassage] = useState('');
+  const [opponentDisconected, setOpponentDisconected] = useState(false);
+  // const [opponentDisconected, setOpponentDisconected] = useState(true);
 
-  const socket = useSocket();
+  const { socket } = useSocket();
+
+  useEffect(() => {
+    setMassage(
+      userId !== gameRoom.firstPlayerId
+        ? 'You starts'
+        : `${gameRoom.opponent.name} starts`
+    );
+  }, [userId, gameRoom]);
 
   //* Opponent move
   useEffect(() => {
@@ -29,13 +37,18 @@ const Game = ({ userName, userId, gameRoom }) => {
     playerMove(pitNum, 'opponent');
   };
 
+  //* Opponenet disconect
   useEffect(() => {
-    setMassage(
-      userId !== gameRoom.firstPlayerId
-        ? 'You starts'
-        : `${gameRoom.opponent.name} starts`
-    );
-  }, [userId, gameRoom]);
+    const handelOpponentDIsconnect = (opponentId) => {
+      if (opponentId === gameRoom.opponent.id) {
+        console.log('Opponent has disconected');
+        setOpponentDisconected(true);
+      }
+    };
+    if (!socket) return;
+    socket.on('opponent disconnected', handelOpponentDIsconnect);
+    return () => socket.off('opponent disconnected');
+  });
 
   //* User move
   const onUserMove = async (pitNum) => {
@@ -94,8 +107,18 @@ const Game = ({ userName, userId, gameRoom }) => {
   if (!gameData || !gameData.userPits) return;
 
   return (
-    <div className="game full-screen centerd-column">
+    <div
+      className={`game full-screen centerd-column ${
+        opponentDisconected && 'blure'
+      }`}
+    >
       <MassageBox massage={massage} />
+      {opponentDisconected && (
+        <OpponentHasLeft
+          restartGame={restartGame}
+          opponent={gameRoom.opponent.name}
+        />
+      )}
       {/* {winner && <Winner winner={winner} />} */}
       <div className="row">
         <div
@@ -141,6 +164,24 @@ const MassageBox = ({ massage }) => {
   return (
     <dialog className="massage-box" open>
       {displaydMassage}
+    </dialog>
+  );
+};
+
+const OpponentHasLeft = ({ restartGame, opponent }) => {
+  const { socket } = useSocket();
+  return (
+    <dialog className="disconnect centerd-column" open>
+      <h2>Oh no!</h2> <h3>{opponent} has disconected!</h3>
+      <button
+        className="btn blue-font"
+        onClick={() => {
+          socket.emit('Find me an opponent');
+          restartGame();
+        }}
+      >
+        Look for new opponent
+      </button>
     </dialog>
   );
 };

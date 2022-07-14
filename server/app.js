@@ -70,6 +70,7 @@ const randFirstPlayr = (socket1, socket2) => {
 };
 
 io.on('connection', async (socket) => {
+  io.to(socket.id).emit('confirm connection');
   await socket.join('wating room');
   console.log(socket.handshake.query.name + ' has connected');
   handelNewUser(socket);
@@ -78,10 +79,18 @@ io.on('connection', async (socket) => {
     console.log(socket.handshake.query.name + ' has disconnected');
     if (globalWatingUser && socket.id === globalWatingUser.id)
       globalWatingUser = undefined;
+    else {
+      io.emit('opponent disconnected', socket.id);
+    }
   });
 
   socket.on('move', ({ pitNum, room }) => {
     socket.to(room).emit('opponent-move', pitNum);
+  });
+
+  socket.on('Find me an opponent', async () => {
+    await socket.join('wating room');
+    handelNewUser(socket);
   });
 });
 

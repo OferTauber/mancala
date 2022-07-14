@@ -10,6 +10,10 @@ const Main = () => {
   const [userId, setUserId] = useState('');
   const [gameRoom, setGameRoom] = useState({});
 
+  const restartGame = () => {
+    setGameRoom({});
+  };
+
   if (!userName) return <Login setName={setUserName} />;
 
   return (
@@ -23,7 +27,12 @@ const Main = () => {
         />
       )}
       {gameRoom.room && (
-        <Game userName={userName} userId={userId} gameRoom={gameRoom} />
+        <Game
+          userName={userName}
+          userId={userId}
+          gameRoom={gameRoom}
+          restartGame={restartGame}
+        />
       )}
     </SocketProvider>
   );
