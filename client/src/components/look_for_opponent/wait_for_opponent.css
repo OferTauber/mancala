@@ -1,0 +1,17 @@
+.wait-for-opponent {
+  padding-top: 4rem;
+  width: 100vw;
+  display: flex;
+  flex-direction: column;
+}
+
+.wait-for-opponent > * {
+  margin: 2rem 0;
+  text-align: center;
+}
+
+.wait-for-opponent .search {
+  width: 85%;
+  max-width: 500px;
+  margin: auto;
+}

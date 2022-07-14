@@ -14,8 +14,10 @@
   flex-direction: column;
 }
 
-.column h1 {
-  font-size: 3.2rem;
+.logo {
+  background: url('../../../assets/img/Logo.png') center center / cover;
+  width: 25rem;
+  height: 9rem;
 }
 
 .form-box {
@@ -41,6 +43,15 @@
   display: flex;
   flex-direction: column;
   align-items: flex-start;
+}
+
+.login-form label,
+.login-form input {
+  margin: 1rem 0;
+}
+
+.login-form .btn {
+  margin: 3rem 0;
 }
 
 .form-item {

@@ -1,4 +1,5 @@
 import Pit from '../pit/pit';
+import Bean from '../bean/bean';
 
 export const GameBord = ({ data, onPlayersMove, userTurn }) => {
   const doNothing = (arg) => void arg;
@@ -23,9 +24,18 @@ export const GameBord = ({ data, onPlayersMove, userTurn }) => {
 };
 
 export const Bank = ({ beans, owner }) => {
+  const mapBeans = () => {
+    const beansArr = [];
+    for (let i = 0; i < beans; i++) {
+      beansArr.push(<Bean key={i} width={4.5} higet={12} />);
+    }
+    return beansArr;
+  };
+
   return (
     <div className={`bank-wraper ${owner}`}>
-      <div className="bank">{beans}</div>
+      <div className="bank">{mapBeans()}</div>
+      <div className="bank-count">{beans}</div>
     </div>
   );
 };

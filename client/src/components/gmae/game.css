@@ -1,51 +1,68 @@
 .game {
-  height: calc(100vh - var(--nav-height));
-  max-height: calc(100vh - var(--nav-height));
-  width: 100vw;
-  background-color: aquamarine;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: space-around;
+  background-color: var(--color-wood);
 }
 
 .game-bord {
-  width: 80%;
-  height: 40%;
-  background: url('../../assets/images/wood.jpg') center center / cover
+  width: 80vw;
+  height: 23vw;
+  background: url('../../../assets/img/wood.jpg') center center / cover
     no-repeat;
   border-radius: 3rem;
-  box-shadow: 1rem 2rem 0 #835400;
+  box-shadow: 0.5rem 1rem 0 var(--color-brune);
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 2.5rem;
+  padding: 0 1.2rem;
   text-align: center;
   font-size: 3rem;
 }
 
 .bank-wraper {
   height: 90%;
-  flex-basis: 12.5%;
-  /* background-color: purple; */
+  flex: 1 1 10%;
   display: flex;
+  align-items: flex-end;
+  flex-direction: column-reverse;
   align-items: flex-end;
 }
 
 .bank-wraper.opponent {
+  flex-direction: column;
   align-items: flex-start;
+}
+
+.bank-count {
+  color: var(--color-gray);
+  font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande',
+    'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
 }
 
 .bank {
   width: 100%;
   height: 80%;
-  background-color: rgba(0, 0, 0, 0.4);
+}
+
+.bank,
+.pit {
+  background-color: var(--pit-fill);
   border-radius: 100rem;
   line-height: 17rem; /*! same as height */
+  box-shadow: 0 0 1rem #555;
+  position: relative;
+}
+
+.row {
+  display: flex;
+  width: 100%;
+  padding: 2rem 8rem;
+}
+
+.row-revers {
+  flex-direction: row-reverse;
 }
 
 .pist-section {
-  flex-basis: 75%;
+  flex: 1 1 90%;
   /* background-color: tan; */
   height: 100%;
   display: flex;
@@ -68,22 +85,62 @@
   flex-direction: row-reverse;
 }
 
-.pist-section.active .pits-line.user .pit {
-  cursor: pointer;
-}
-.pist-section.active .pits-line.user .pit:hover {
-  opacity: 0.8;
+.player {
+  min-width: 15rem;
+  padding: 1rem;
+  border-radius: 1rem;
+  margin: 1rem;
+  color: var(--color-white);
 }
 
-.pit {
-  width: 8rem;
-  height: 8rem;
-  background-color: rgba(0, 0, 0, 0.4);
-  border-radius: 100rem;
-  line-height: 8rem; /*! same as height */
+.player .title {
+  font-size: 1.9rem;
 }
 
 .player.active {
-  color: red;
-  font-weight: 700;
+  animation: scale-up-center 0.8s cubic-bezier(0.39, 0.575, 0.565, 1) both;
+}
+
+@keyframes scale-up-center {
+  0% {
+    -webkit-transform: scale(1);
+    transform: scale(1);
+    background-color: var(--color-blue);
+    color: var(--color-white);
+  }
+  100% {
+    -webkit-transform: scale(1.2);
+    transform: scale(1.2);
+    background-color: var(--color-lightblue);
+    font-weight: 700;
+    color: var(--color-yellow);
+  }
+}
+
+@media (max-width: 500px) {
+  .game::after {
+    content: 'Pleyas rotate the device';
+    width: 200vw;
+    height: 150vh;
+    background-color: var(--color-blue);
+    color: var(--color-white);
+    position: absolute;
+    text-align: center;
+    line-height: 100vw;
+    font-size: 4rem;
+    top: 0;
+    z-index: 1;
+  }
+}
+
+.massage-box {
+  position: absolute;
+  top: 5%;
+  left: 38%;
+  font-size: 2.5rem;
+  padding: 2rem 3rem;
+  z-index: 2;
+  background-color: var(--color-red);
+  border-color: var(--color-brune);
+  border-radius: 2rem;
 }

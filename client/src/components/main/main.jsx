@@ -3,6 +3,7 @@ import Login from '../login/login';
 import WaitForOpponent from '../look_for_opponent/wait_for_opponent';
 import { SocketProvider } from '../../contecst/socket_provider';
 import { useState } from 'react';
+import './main.css';
 
 const Main = () => {
   const [userName, setUserName] = useState('');
@@ -15,6 +16,7 @@ const Main = () => {
     <SocketProvider name={userName}>
       {!gameRoom.room && (
         <WaitForOpponent
+          userName={userName}
           setUserId={setUserId}
           setGameRoom={setGameRoom}
           userId={userId}
