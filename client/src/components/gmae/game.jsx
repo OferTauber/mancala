@@ -107,42 +107,46 @@ const Game = ({ userName, userId, gameRoom, restartGame }) => {
   if (!gameData || !gameData.userPits) return;
 
   return (
-    <div
-      className={`game full-screen centerd-column ${
-        opponentDisconected && 'blure'
-      }`}
-    >
-      <MassageBox massage={massage} />
+    <>
       {opponentDisconected && (
         <OpponentHasLeft
           restartGame={restartGame}
           opponent={gameRoom.opponent.name}
         />
       )}
-      {/* {winner && <Winner winner={winner} />} */}
-      <div className="row">
-        <div
-          className={`player centerd-column blue opponent ${
-            !userTurn && 'active'
-          }`}
-        >
-          <div className="title">{gameRoom.opponent.name}</div>
+      <div
+        className={`game full-screen centerd-column ${
+          opponentDisconected && 'blure'
+        }`}
+      >
+        <MassageBox massage={massage} />
+        {/* {winner && <Winner winner={winner} />} */}
+        <div className="row">
+          <div
+            className={`player centerd-column blue opponent ${
+              !userTurn && 'active'
+            }`}
+          >
+            <div className="title">{gameRoom.opponent.name}</div>
+          </div>
         </div>
-      </div>
 
-      <GameBord
-        data={gameData}
-        onPlayersMove={onUserMove}
-        userTurn={userTurn}
-      />
-      <div className="row row-revers">
-        <div
-          className={`player centerd-column blue user ${userTurn && 'active'}`}
-        >
-          <div className="title">{userName}</div>
+        <GameBord
+          data={gameData}
+          onPlayersMove={onUserMove}
+          userTurn={userTurn}
+        />
+        <div className="row row-revers">
+          <div
+            className={`player centerd-column blue user ${
+              userTurn && 'active'
+            }`}
+          >
+            <div className="title">{userName}</div>
+          </div>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 

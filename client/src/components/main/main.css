@@ -18,7 +18,6 @@
 #root {
   max-width: 100vw;
   max-height: 100vh;
-  overflow: hidden;
 }
 
 .box {
@@ -67,4 +66,27 @@ input {
   cursor: pointer;
   background-color: var(--color-gray);
   color: var(--color-black);
+}
+
+.btn-yellow {
+  background-color: var(--color-yellow);
+  color: var(--color-white);
+}
+
+.btn-blue {
+  background-color: var(--color-blue);
+  color: var(--color-white);
+}
+
+.constainer {
+  max-width: 1200px;
+  margin: auto;
+}
+
+.padding-small {
+  padding: 2rem;
+}
+
+.blure {
+  filter: blur(4px);
 }

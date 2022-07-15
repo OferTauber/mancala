@@ -1,0 +1,29 @@
+ol {
+  font-size: 1.8rem;
+  margin: 1rem;
+  margin-left: 3rem;
+  font-weight: 500;
+}
+iframe {
+  display: none;
+}
+.how-to-play {
+  padding: 2rem;
+}
+
+@media (min-width: 400px) {
+  .demo-video {
+    display: none;
+  }
+  iframe {
+    display: block;
+    margin: auto;
+  }
+  ol {
+    font-size: 2.3rem;
+  }
+  #confirm-btn {
+    font-size: 3rem;
+    padding: 1rem 2.5rem;
+  }
+}
