@@ -15,7 +15,7 @@ const Game = ({ userName, userId, gameRoom, restartGame }) => {
   const [userTurn, setUserTurn] = useState(userId !== gameRoom.firstPlayerId);
   const [massage, setMassage] = useState('');
   const [opponentDisconected, setOpponentDisconected] = useState(false);
-  // const [opponentDisconected, setOpponentDisconected] = useState(true);
+  const [winner, setWinner] = useState('');
 
   const { socket } = useSocket();
 
@@ -41,7 +41,6 @@ const Game = ({ userName, userId, gameRoom, restartGame }) => {
   useEffect(() => {
     const handelOpponentDIsconnect = (opponentId) => {
       if (opponentId === gameRoom.opponent.id) {
-        console.log('Opponent has disconected');
         setOpponentDisconected(true);
       }
     };
@@ -96,7 +95,9 @@ const Game = ({ userName, userId, gameRoom, restartGame }) => {
       setGameData,
       userTurn ? 'user' : 'opponent'
     );
-    setMassage('Game Over - ' + res);
+    if (res === 'tie') setWinner(res);
+    else if (res === 'user') setWinner('You');
+    else setWinner(gameRoom.opponent.name);
   };
 
   const displatAnotherTurnMassage = () => {
@@ -114,13 +115,13 @@ const Game = ({ userName, userId, gameRoom, restartGame }) => {
           opponent={gameRoom.opponent.name}
         />
       )}
+      {winner && <Winner winner={winner} restartGame={restartGame} />}
       <div
         className={`game full-screen centerd-column ${
-          opponentDisconected && 'blure'
+          (opponentDisconected || winner) && 'blure'
         }`}
       >
         <MassageBox massage={massage} />
-        {/* {winner && <Winner winner={winner} />} */}
         <div className="row">
           <div
             className={`player centerd-column blue opponent ${
@@ -185,6 +186,28 @@ const OpponentHasLeft = ({ restartGame, opponent }) => {
         }}
       >
         Look for new opponent
+      </button>
+    </dialog>
+  );
+};
+
+const Winner = ({ winner, restartGame }) => {
+  const { socket } = useSocket();
+  const massage = () => {
+    if (winner === 'tie') return "It's a Tie!";
+    return winner + ' win the game';
+  };
+  return (
+    <dialog className="disconnect centerd-column" open>
+      <h2>Game Over</h2> <h2>{massage()}</h2>
+      <button
+        className="btn blue-font"
+        onClick={() => {
+          socket.emit('Find me an opponent');
+          restartGame();
+        }}
+      >
+        Stat a new game
       </button>
     </dialog>
   );
